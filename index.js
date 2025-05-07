@@ -26,12 +26,26 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:8080',
+  'https://procid-frontend-git-main-vijay-mauryas-projects.vercel.app'
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://procid-frontend-git-main-vijay-mauryas-projects.vercel.app/" || "*",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
+
 
 // Routes
 app.use("/api/auth", authRoutes);
