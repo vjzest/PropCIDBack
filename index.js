@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  'http://localhost:8080',
+  'http://localhost:8080','https://propcid.com',
   'https://prop-cid-frontend-git-main-vijay-mauryas-projects.vercel.app'
 ];
 
