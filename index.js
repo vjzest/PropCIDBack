@@ -30,7 +30,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   process.env.CLIENT_URL,
   'http://localhost:8080',
-  'https://procid-frontend-git-main-vijay-mauryas-projects.vercel.app'
+  'https://prop-cid-frontend-git-main-vijay-mauryas-projects.vercel.app/'
 ];
 
 app.use(
