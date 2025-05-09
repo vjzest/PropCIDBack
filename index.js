@@ -8,12 +8,12 @@ import { db } from "./config/firebase.js"; // Make sure this is correctly config
 
 // Import route files
 import authRoutes from "./routes/auth.js";
-import reelRoutes from "./controllers/cloudinaryStore.js";
+// import reelRoutes from "./controllers/cloudinaryStore.js";
 import propertyRoutes from "./routes/propertyRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import storyRoutes from "./routes/storyRoutes.js";
-import BrokerRoutes from "./routes/BrokerRoutes.js";
-import BuilderRoutes from "./routes/BuilderRoutes.js"
+// import BrokerRoutes from "./routes/BrokerRoutes.js";
+// import BuilderRoutes from "./routes/BuilderRoutes.js"
 
 dotenv.config();
 
