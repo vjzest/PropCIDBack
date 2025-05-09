@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 // app.use("/api/auth", userRoutes);
-app.use("/api", reelRoutes);
+// app.use("/api", reelRoutes);
 app.use("/v1/property", propertyRoutes);
 app.use("/contact", contactRoutes);
 app.use("/story", storyRoutes);
