@@ -22,7 +22,11 @@ const PORT = process.env.PORT || 4000;
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:8080", // Your frontend URL
+    origin: [
+      "https://prop-cid-frontend-git-main-vijay-mauryas-projects.vercel.app",
+      "https://propcid.com",
+      process.env.CLIENT_URL || "http://localhost:8080"
+    ],
     credentials: true,
   })
 );
