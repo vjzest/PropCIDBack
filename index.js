@@ -40,7 +40,7 @@ app.use("/v1/property", propertyRoutes);
 app.use("/contact", contactRoutes);
 app.use("/story", storyRoutes);
 // app.use("/broker", BrokerRoutes);
-// app.use("/builder", BuilderRoutes);
+app.use("/builder", BuilderRoutes);
 
 
 // 
