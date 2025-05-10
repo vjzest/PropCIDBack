@@ -1,6 +1,10 @@
-// firebase.js
+// firebase.js (for backend Node.js)
 
-import { initializeApp as initializeClientApp } from "firebase/app";
+import {
+  initializeApp as initializeClientApp,
+  getApps,
+  getApp,
+} from "firebase/app";
 import { getFirestore as getClientFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import admin from "firebase-admin";
@@ -8,7 +12,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// --- Client SDK
+// --- Client SDK (for limited Firebase features in Node, like storage access if needed)
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -19,11 +23,14 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-const clientApp = initializeClientApp(firebaseConfig);
+// Prevent duplicate client app initialization
+const clientApp = getApps().length
+  ? getApp()
+  : initializeClientApp(firebaseConfig);
 const clientDb = getClientFirestore(clientApp);
-const storage = getStorage(clientApp);
+const clientStorage = getStorage(clientApp);
 
-// --- Admin SDK (for backend)
+// --- Admin SDK (for server-side usage like verifying tokens, managing users)
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 if (!admin.apps.length) {
@@ -33,8 +40,21 @@ if (!admin.apps.length) {
   });
 }
 
-const auth = admin.auth();
+const adminAuth = admin.auth();
 const adminDb = admin.firestore();
 const adminStorage = admin.storage();
+const bucket = admin.storage().bucket();
 
-export { auth, adminDb as db, admin, storage, adminStorage };
+export {
+  // Admin SDK
+  admin,
+  adminAuth as auth,
+  adminDb as db,
+  adminStorage,
+  bucket,
+
+  // Client SDK (optional on backend)
+  clientApp,
+  clientDb,
+  clientStorage,
+};
