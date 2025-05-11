@@ -24,8 +24,7 @@ app.use(
   cors({
     origin: [
       "https://prop-cid-frontend-git-main-vijay-mauryas-projects.vercel.app",
-      "https://propcid.com",
-      process.env.CLIENT_URL || "http://localhost:8080"
+      "https://propcid.com"
     ],
     credentials: true,
   })
