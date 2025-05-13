@@ -1,7 +1,7 @@
 import { db, bucket } from "../config/firebase.js";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-
+import admin from "firebase-admin";
 // 🔹 Get Builder by UID (Fetch user data from the `users` collection)
 export const getBuilderByUid = async (req, res) => {
   const { uid } = req.params;
@@ -61,6 +61,57 @@ export const updateBuilderByUid = async (req, res) => {
     res.status(200).json(updatedDoc.data());
   } catch (error) {
     console.error("Error updating builder profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+// 🔹 Delete Builder by UID (from Firestore and Firebase Auth if needed)
+// DELETE /api/builder/:uid
+
+export const deleteBuilderByUid = async (req, res) => {
+  const { uid } = req.params;
+
+  // Get the ID token from the request's Authorization header
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+  if (!idToken) {
+    return res.status(401).send({ message: "Unauthorized" });
+  }
+
+  try {
+    // Verify the ID token
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    if (decodedToken.uid !== uid) {
+      return res.status(403).send({ message: "Forbidden" });
+    }
+
+    const userRef = db.collection("users").doc(uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userData = userDoc.data();
+
+    // Delete Firestore user doc
+    await userRef.delete();
+
+    // Delete profile image from Firebase Storage
+    if (userData.profileImage) {
+      const imagePath = decodeURIComponent(
+        userData.profileImage.split("/o/")[1].split("?alt=")[0]
+      );
+      const file = bucket.file(imagePath);
+      await file.delete().catch((err) => {
+        console.warn("Failed to delete profile image:", err.message);
+      });
+    }
+
+    // Delete user from Firebase Authentication
+    await admin.auth().deleteUser(uid);
+
+    res.status(200).json({ message: "Builder deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting builder:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
